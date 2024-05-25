@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click Rush</title>
+    <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-database.js"></script>
+    <script src="../main.js"></script>
+    <script src="clickRush.js"></script>
+
+    <style>
+        body {
+            overflow: hidden;
+            background-color: aqua;
+            color: white;
+        }
+
+        #loggerDiv {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 99.7%;
+            height: 99.5%;
+            background-color: rgba(12, 12, 12, 0.6);
+            border: outset 2px gray;
+            z-index: 100;
+        }
+
+        #header {
+            background-color: brown;
+            width: 99%;
+            position: absolute;
+            top: -10px;
+            left: 0px;
+            text-align: center;
+            padding: 10px;
+            border-bottom: 5px outset rgba(0, 0, 0, 0.5);
+        }
+
+        #game {
+            margin-top: 5%;
+            width: 76%;
+            padding: 2%;
+            background-color: greenyellow;
+        }
+
+        .rush {
+            display: inline-block;
+            width: 15%;
+            height: 3000px;
+            background-color: brown;
+            margin-left: -5px;
+            border: solid 5px white;
+        }
+
+        .playerLine {
+            background-color: cadetblue;
+            height: 20px;
+        }
+
+        .playerSelectBtn {
+            color: black;
+            background-color: gray;
+            border: 2px outset rgba(0, 0, 0, 0.300);
+            margin: 5%;
+            font-weight: bold;
+        }
+
+        label {
+            font-weight: bolder;
+            border-top: 2px solid aliceblue;
+        }
+
+        .bottomLabels {
+            position: relative;
+            top: 0px;
+        }
+    </style>
+</head>
+
+<body onload="verifyMobile()">
+    <div id="loggerDiv">
+        <center>
+            <div id="roomSelector">
+                <h3>Type Room ID Here to Join or Create:</h3>
+                <input id="roomInput" style="background-color: aliceblue;width: 80%;">
+                <br><br>
+                <button onclick="join()" style="background-color: green;color: aliceblue;">Join Room</button>
+                <button onclick="create()" style="background-color: purple;color: aliceblue;">Create Room</button>
+                <p id="error"></p>
+            </div>
+            <br><br><br><br><br><br><br>
+            <div id="playerSelector" style="visibility: hidden;">
+                <h3>Select Player</h3>
+                <button class="playerSelectBtn" id="p1btn" onclick="selectPlayer(1)">1</button>
+                <button class="playerSelectBtn" id="p2btn" onclick="selectPlayer(2)">2</button>
+                <button class="playerSelectBtn" id="p3btn" onclick="selectPlayer(3)">3</button>
+                <button class="playerSelectBtn" id="p4btn" onclick="selectPlayer(4)">4</button>
+                <br><br>
+                <button style="background-color: lawngreen;color: blue;" id="spectatorbtn"
+                    onclick="selectPlayer(0)">Spectate</button>
+            </div>
+        </center>
+    </div>
+    <div id="mainbody">
+        <div id="header">
+            <h1>Click Rush</h1>
+            <label id="roomId" style="float: left;"></label>
+            <label id="roomStatus"></label>
+            <label id="selectedPlayer" style="float: right;"></label>
+        </div>
+        <center>
+            <div style="margin-top: 15%;">
+                <label style="color: blueviolet;">Teleport to Line when Clicked:</label><button id="toggleTp"
+                    onclick="showTp()" style="background-color: chartreuse;">On</button><br>
+                <label style="color: blueviolet;">Show Number of Line Height:</label><button id="toggleNumber"
+                    onclick="showNumbers()" style="background-color: chartreuse;">On</button><br>
+            </div>
+            <button style="margin-top: 2%;background-color: greenyellow;box-shadow: 2px 2px 2px green;" id="startButton"
+                onclick="startPlay()">START</button>
+            <div id="game">
+                <div class="rush" onclick="clicked(1)">
+                    <div class="playerLine" id="1">
+                        <span class="bottomLabels" id="bottom1">P1</span>
+                    </div>
+                </div>
+                <div class="rush" onclick="clicked(2)">
+                    <div class="playerLine" id="2">
+                        <span class="bottomLabels" id="bottom2">P2</span>
+                    </div>
+                </div>
+                <div class="rush" onclick="clicked(3)">
+                    <div class="playerLine" id="3">
+                        <span class="bottomLabels" id="bottom3">P3</span>
+                    </div>
+                </div>
+                <div class="rush" onclick="clicked(4)">
+                    <div class="playerLine" id="4">
+                        <span class="bottomLabels" id="bottom4">P4</span>
+                    </div>
+                </div>
+                <div id="EndLine">
+                    <div style="visibility: hidden;background-image: url(finish.avif);padding: 10px;width: 61.5%;margin-left: -4px;" id="endShow">
+                         <h1 style="color: red;text-shadow: 2px 2px 2px black;">FINISH!</h1>
+                    </div>
+                </div>
+            </div>
+        </center>
+    </div>
+</body>
+
+</html>

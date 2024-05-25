@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CatMeooww10 - Gaming Land</title>
+    <style>
+        @font-face {
+            font-family: Minecraft;
+            src: url(Minecraft.ttf);
+        }
+        body {
+            background-size: 100%;
+            background-repeat: repeat-y;
+            color: aliceblue;
+            text-align: center;
+            font-family: Minecraft;
+        }
+
+        #gameBox {
+            width: 70%;
+            background-color: rgba(10, 10, 10, 0.300);
+            margin: 10px;
+            padding: 5px;
+        }
+
+        h2{
+            color:green;
+            border-bottom: 2px white ridge;
+        }
+
+        .gameItem {
+            background-color: rgb(40, 40, 40);
+            border: 2px outset black;
+            margin: 20px;
+        }
+
+        .gameItem img {
+            width: 400px;
+            height: 300px;
+            border: 3px inset black;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body background="Stone Background.png">
+    <h1>CatMeooww10 Games</h1>
+    <hr>
+    <center>
+        <div class="gameItem">
+            <a href="https://catmeooww.github.io/CatMeooww/catmeoowwProjects.html">View my other Projects</a>
+        </div>
+        <div id="gameBox">
+            <section>
+                <h2>Web Games</h2>
+                <section class="gameItem" id="crafty_adventure" onclick="redirect(1)"
+                 onmouseover="bright(this.id)" onmouseleave="unbright(this.id)">
+                    <img src="gamesIcon/craftyAdventureLogo.png">
+                    <h3>Crafty Adventure</h3>
+                </section>
+                <section class="gameItem" id="terrain-domination" onclick="redirect(2)"
+                onmouseover="bright(this.id)" onmouseleave="unbright(this.id)">
+                    <img src="gamesIcon/terrain_domain_logo.jpeg">
+                    <h3>Terrain Domination</h3>
+                </section>
+                <section class="gameItem" id="click-rush" onclick="redirect(3)"
+                onmouseover="bright(this.id)" onmouseleave="unbright(this.id)">
+                    <img src="gamesIcon/clickrush_bg.png">
+                    <h3>Click Rush</h3>
+                </section>
+            </section>
+            <section>
+                <h2>Mods</h2>
+                <section class="gameItem" id="crafty_minecraft" onclick="redirect(4)"
+                 onmouseover="bright(this.id)" onmouseleave="unbright(this.id)">
+                    <img src="gamesIcon/crafty_world_bg.png">
+                    <h3>Crafty Adventure</h3>
+                </section>
+            </section>
+        </div>
+    </center>
+    <script>
+        function bright(id){
+           r = Math.floor(Math.random() *255);
+           g = Math.floor(Math.random() *255);
+           b = Math.floor(Math.random() *255);
+           color = "rgb("+r+","+g+","+b+")";
+           document.getElementById(id).style.borderColor = color;
+           console.log(color);
+        }
+        function unbright(id){
+            document.getElementById(id).style.borderColor = "black";
+            console.clear();
+        }
+
+        function redirect(to){
+            if(to==1){
+
+            }else if(to == 2){
+
+            }else if(to == 3){
+              window.location = 'clickRush/game.html';
+            }else if(to == 4){
+                window.location = 'https://www.curseforge.com/minecraft/mc-mods/crafty-world';
+            }
+        }
+    </script>
+</body>
+
+</html>
