@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo do Receba</title>
+    <script src="../p5.dom.min.js"></script>
+    <script src="../p5.min.js"></script>
+    <script src="../p5.play.js"></script>
+    <script src="../p5.sound.min.js"></script>
+    <link rel="stylesheet" href="creseba.css">
+    <link rel="shortcut icon" href="../sprites/ExplorerPlayer.png" type="image/png">
+</head>
+
+<body>
+    <center>
+        <h3>Jogo do Recebinha</h3>
+        <div id="game">
+
+        </div>
+        <div id="mobileButtons">
+            <button onclick="fire('up')"><img src="arrow_up.png"></button>
+            <button onclick="fire('left')"><img src="arrow_left.png"></button>
+            <button onclick="fire('down')">0</button>
+            <button onclick="fire('right')"><img src="arrow_right.png"></button>
+        </div>
+    </center>
+
+    <script>
+        goals = 0;
+
+        xTurn = 0;
+        yVelocity = 10;
+
+        var isMobile = /iPhone|Android|iPad/i.test(navigator.userAgent);
+
+        if (isMobile) {
+            document.getElementById("mobileButtons").style.visibility = "visible";
+        }
+
+        function preload() {
+            ballImg = loadImage("ball.png");
+            cannonImg = loadImage("cannon.png");
+            targetImg = loadImage("goal.png")
+        }
+        function setup() {
+            canvas = createCanvas(windowWidth - 30, windowHeight - 100);
+            canvas.parent("game");
+
+            cannon = createSprite(windowWidth / 2, windowHeight - 200);
+            cannon.addImage("cannon", cannonImg);
+            cannon.scale = 0.7;
+
+            ball = createSprite(windowWidth / 2, windowHeight - 200);
+            ball.addImage("ball", ballImg);
+            ball.visible = false;
+            ball.scale = 0.7;
+
+            target = createSprite((Math.random() * windowWidth - 40) + 10, (Math.random() * 100) + 10);
+            target.addImage("gol", targetImg);
+        }
+        function draw() {
+            background("aqua")
+            drawSprites();
+            fill("black")
+            text("Gols: " + goals, 10, 20)
+            fill("green")
+            rect(-10, windowHeight - 130, windowWidth, windowHeight)
+
+            if ((keyDown("up") || keyDown("w") || keyDown("space")) && !ball.visible) {
+                fire("up");
+            }
+
+            if ((keyDown("right") || keyDown("d")) && xTurn < 90) {
+                fire("right");
+            } else if ((keyDown("left") || keyDown("a")) && xTurn > -90) {
+                fire("left");
+            }
+
+            if (keyDown("down") || keyDown("r")) {
+                fire("down");
+            }
+
+            if (keyDown("ctrl")) {
+                target.debug = true;
+                ball.debug = true;
+            } else {
+                target.debug = false;
+                ball.debug = false;
+            }
+
+            cannon.rotation = xTurn;
+
+            if (ball.isTouching(target)) {
+                resetBall(true);
+            }
+
+            if (ball.y < 0) {
+                resetBall(false);
+            }
+        }
+        function fire(move) {
+            if (move == "up") {
+                ball.visible = true;
+                ball.velocityX = xTurn / 2.5;
+                ball.velocityY = -yVelocity;
+            } else if (move == "left") {
+                xTurn -= 1;
+            } else if (move == "right") {
+                xTurn += 1;
+            } else {
+                xTurn = 0;
+            }
+        }
+        function resetBall(scored) {
+            ball.velocityX = 0;
+            ball.velocityY = 0;
+            ball.visible = false;
+            ball.x = windowWidth / 2;
+            ball.y = windowHeight - 200;
+            if (scored) {
+                target.x = (Math.random() * windowWidth - 50) + 10;
+                target.y = (Math.random() * 100) + 10;
+                goals++;
+            }
+        }
+    </script>
+</body>
+
+</html>

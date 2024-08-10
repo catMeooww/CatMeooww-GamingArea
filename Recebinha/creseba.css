@@ -1,0 +1,27 @@
+body{
+    background-color: aqua;  
+}
+
+canvas{
+    border: 1px solid cadetblue;
+}
+
+#mobileButtons{
+    visibility: hidden;
+    background-color: black;
+    width: 80%;
+}
+
+#mobileButtons img{
+    width: 40px;
+    height: 40px;
+}
+
+#mobileButtons button{
+    background-color: black;
+    border: green outset 1px;
+    width: 50px;
+    height: 50px;
+    color: chartreuse;
+    float: inline-start;
+}
