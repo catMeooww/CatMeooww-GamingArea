@@ -22,6 +22,7 @@
             background-color: rgba(10, 10, 10, 0.300);
             margin: 10px;
             padding: 5px;
+            border: inset black 1px;
         }
 
         h2{
@@ -33,6 +34,7 @@
             background-color: rgb(40, 40, 40);
             border: 2px outset black;
             margin: 20px;
+            cursor: pointer;
         }
 
         .gameItem img {
@@ -40,6 +42,11 @@
             height: 300px;
             border: 3px inset black;
             margin-top: 5px;
+        }
+
+        a{
+            color: aqua;
+            margin: 5px;
         }
     </style>
 </head>
@@ -54,7 +61,7 @@
         <div id="gameBox">
             <section>
                 <h2>Web Games</h2>
-                <section class="gameItem" id="crafty_adventure" onclick="redirect(1)"
+                <section class="gameItem" id="crafty-adventure" onclick="redirect(1)"
                  onmouseover="bright(this.id)" onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/craftyAdventureLogo.png">
                     <h3>Crafty Adventure</h3>
@@ -69,6 +76,11 @@
                     <img src="gamesIcon/clickrush_bg.png">
                     <h3>Click Rush</h3>
                 </section>
+                <section class="gameItem" id="jumping-around" onclick="redirect(5)"
+                onmouseover="bright(this.id)" onmouseleave="unbright(this.id)">
+                    <img src="gamesIcon/slime.png">
+                    <h3>Jumping Around</h3>
+                </section>
             </section>
             <section>
                 <h2>Mods</h2>
@@ -79,6 +91,7 @@
                 </section>
             </section>
         </div>
+        <b style="float: right;">@CatMeooww</b>
     </center>
     <script>
         function bright(id){
@@ -103,6 +116,8 @@
               window.location = 'clickRush/game.html';
             }else if(to == 4){
                 window.location = 'https://www.curseforge.com/minecraft/mc-mods/crafty-world';
+            }else if (to == 5){
+                window.location = 'https://catmeooww.github.io/Jumping-Around/';
             }
         }
     </script>
