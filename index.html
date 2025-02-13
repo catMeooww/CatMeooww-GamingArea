@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>CatMeooww10 - Gaming Land</title>
+    <link rel="shortcut icon" href="gamesIcon/CatMeooww.jpg" type="image/jpg">
     <style>
         @font-face {
             font-family: Minecraft;
@@ -81,6 +82,11 @@
                     <img src="gamesIcon/slime.png">
                     <h3>Jumping Around</h3>
                 </section>
+                <section class="gameItem" id="multi-dino" onclick="redirect(6)"
+                onmouseover="bright(this.id)" onmouseleave="unbright(this.id)">
+                    <img src="gamesIcon/multidino_bg.png">
+                    <h3>Multi Dino</h3>
+                </section>
             </section>
             <section>
                 <h2>Mods</h2>
@@ -111,13 +117,15 @@
             if(to==1){
                 window.location = 'https://catmeooww.github.io/Crafty-Adventure/';
             }else if(to == 2){
-
+                
             }else if(to == 3){
               window.location = 'clickRush/game.html';
             }else if(to == 4){
                 window.location = 'https://www.curseforge.com/minecraft/mc-mods/crafty-world';
             }else if (to == 5){
                 window.location = 'https://catmeooww.github.io/Jumping-Around/';
+            }else if (to == 6){
+                window.location = 'MultiDino/game.html';
             }
         }
     </script>

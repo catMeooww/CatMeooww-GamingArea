@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Dino</title>
+    <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-database.js"></script>
+    <script src="../p5.dom.min.js"></script>
+    <script src="../p5.min.js"></script>
+    <script src="../p5.play.js"></script>
+    <script src="../p5.sound.min.js"></script>
+    <script src="../main.js"></script>
+    <script src="maps.js"></script>
+    <script src="dino.js"></script>
+
+    <style>
+        body {
+            overflow: hidden;
+            background-color: white;
+        }
+        #canvas-div{
+            border: 2px double aliceblue;
+            text-align: center;
+        }
+
+        #login-div{
+            margin:10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 id="connection">Connecting to Dino</h1>
+    <div id="canvas-div">
+
+    </div>
+    <div id="login-div">
+        <input id="player-name" placeholder="your nickname">
+        <button onclick="loadPlayer()">Join Game</button>
+    </div>
+</body>
+
+</html>
