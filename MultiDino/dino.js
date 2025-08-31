@@ -6,18 +6,20 @@ animBol = 0;
 worldData = new LevelData();
 
 player = "";
+room = "";
 world = 1;
 
 function loadPlayer(){
     player = document.getElementById('player-name').value.replaceAll(" ","_");
-    if (player != ""){
+    room = document.getElementById('room-name').value.replaceAll(" ","_");
+    if (player != "" && room != ""){
         isJoining = false
-        firebase.database().ref("/MultiDino/players/" + player + "/status").on("value", data => {
+        firebase.database().ref("/MultiDino/" + room + "/players/" + player + "/status").on("value", data => {
             isPlayerCreated = data.val();
             if (!isJoining){
                 isJoining = true;
                 if (isPlayerCreated != "online") {
-                    firebase.database().ref("/MultiDino/players/" + player).set({
+                    firebase.database().ref("/MultiDino/" + room + "/players/" + player).set({
                         status:'online',
                         world:1,
                         x:0,
@@ -32,7 +34,7 @@ function loadPlayer(){
                     document.getElementById("connection").innerHTML = "Connected as "+player;
 
                     loaded = false;
-                    firebase.database().ref("/MultiDino/players/" + player + "/world").on("value", data => {
+                    firebase.database().ref("/MultiDino/" + room + "/players/" + player + "/world").on("value", data => {
                         world = data.val();
                         if (!loaded){
                             loaded = true;
@@ -40,7 +42,7 @@ function loadPlayer(){
                         }
                     });
 
-                    firebase.database().ref("/MultiDino/players/" + player + "/x").on("value", data => {
+                    firebase.database().ref("/MultiDino/" + room + "/players/" + player + "/x").on("value", data => {
                         if (!logged){
                             playerSprite.x = data.val();
                             logged = true;
@@ -57,6 +59,7 @@ function preload() {
     dinoImg2 = loadImage("dinossaur2.png");
     cactusImg = loadImage("cactus.png");
     grassImg = loadImage("grass.png");
+    darkgrassImg = loadImage("darkgrass.png");
     enderImg = loadImage("end_teleporter.png");
 }
 function setup() {
@@ -72,16 +75,25 @@ function setup() {
 
     groundSprite1 = createSprite(550,347);
     groundSprite1.addImage("1",grassImg);
+    groundSprite1.addImage("2",darkgrassImg);
     groundSprite1.scale = 10;
     groundSprite1.depth = 3;
     groundSprite2 = createSprite(-150,347);
     groundSprite2.addImage("1",grassImg);
+    groundSprite2.addImage("2",darkgrassImg);
     groundSprite2.scale = 10;
     groundSprite2.depth = 3;
 
     frameRate(80);
     imageMode(CENTER);
 }
+
+document.addEventListener('mousedown', () => {
+    isMouseDown = true;
+});
+document.addEventListener('mouseup', () => {
+    isMouseDown = false;
+});
 
 function jump(){
     if (playerHolder.isTouching(groundSprite1)||playerHolder.isTouching(worldData.groupblocks)){
@@ -91,6 +103,16 @@ function jump(){
 
 function finish(){
     playerSprite.x = 0;
+    if (world == 2){
+        world = 1
+    }else{
+        world+=1;
+    }
+    worldData.resetWorld();
+    worldData.loadWorldSprites(world)
+    firebase.database().ref("/MultiDino/" + room + "/players/" + player).update({
+            world: world
+    });
 }
 
 function draw(){
@@ -113,6 +135,10 @@ function draw(){
             background("cyan");
             groundSprite1.changeImage("1");
             groundSprite2.changeImage("1");
+        } else if (world == 2){
+            background("blue");
+            groundSprite1.changeImage("2");
+            groundSprite2.changeImage("2");
         }
 
         if (animBol > 5){
@@ -121,7 +147,12 @@ function draw(){
             playerSprite.changeImage("2");
         }
 
-        playerSprite.velocityY += 0.8;
+        if(!isPaused){
+            playerSprite.velocityY += 0.8;
+        }else{
+            text("PAUSED",playerSprite.x - 400,15)
+        }
+
         playerHolder.x = playerSprite.x;
         playerHolder.y = playerSprite.y + 30;
 
@@ -141,17 +172,21 @@ function draw(){
 
         if(keyDown("esc")){
             playerSprite.velocityX = 0;
+            playerSprite.velocityY = 0;
             isPaused = !isPaused;
         }
 
         if (keyDown("up") || keyDown("w") || keyDown("space")){
             jump();
         }
+        if (isMouseDown){
+            jump()
+        }
 
-        firebase.database().ref("/MultiDino/players/" + player).update({
+        firebase.database().ref("/MultiDino/" + room + "/players/" + player).update({
             x: Math.round(playerSprite.x)
         });
-        firebase.database().ref("/MultiDino/players/" + player).update({
+        firebase.database().ref("/MultiDino/" + room + "/players/" + player).update({
             y: Math.round(playerSprite.y)
         });
 
@@ -174,7 +209,7 @@ function draw(){
         drawSprites();
 
         playersReaded = false;
-        firebase.database().ref("/MultiDino/players/").on('value', function (snapshot) {
+        firebase.database().ref("/MultiDino/" + room + "/players/").on('value', function (snapshot) {
             if (!playersReaded){
                 playersReaded = true;
                 snapshot.forEach(function (childSnapshot) {
@@ -200,8 +235,4 @@ function draw(){
             }
         });
     }
-}
-
-function mouseClicked(){
-    jump();
 }
