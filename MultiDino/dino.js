@@ -1,7 +1,26 @@
 var testMobile = /iPhone|Android|iPad/i.test(navigator.userAgent);
-        if (testMobile){
-            screen.orientation.lock('landscape-primary');
+if (testMobile) {
+    try {
+        if (document.documentElement.requestFullscreen) {
+            await document.documentElement.requestFullscreen();
+        } else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
+            await document.documentElement.mozRequestFullScreen();
+        } else if (document.documentElement.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+            await document.documentElement.webkitRequestFullscreen();
+        } else if (document.documentElement.msRequestFullscreen) { /* IE/Edge */
+            await document.documentElement.msRequestFullscreen();
         }
+
+        await screen.orientation.lock("landscape-primary");
+    } catch (error) {
+        console.error("Failed to lock screen orientation:", error);
+        if (error.name === "NotSupportedError") {
+            console.warn("Screen orientation locking is not supported in this browser or context.");
+        } else if (error.name === "SecurityError") {
+            console.warn("Screen orientation locking requires user gesture or a secure context.");
+        }
+    }
+}
 
 logged = false;
 
