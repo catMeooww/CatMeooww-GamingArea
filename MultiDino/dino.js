@@ -1,6 +1,6 @@
 var testMobile = /iPhone|Android|iPad/i.test(navigator.userAgent);
         if (testMobile){
-            screen.orientation.lock('landscape');
+            screen.orientation.lock('landscape-primary');
         }
 
 logged = false;
