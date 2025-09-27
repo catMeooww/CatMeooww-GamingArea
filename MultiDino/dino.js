@@ -2,16 +2,16 @@ var testMobile = /iPhone|Android|iPad/i.test(navigator.userAgent);
 if (testMobile) {
     try {
         if (document.documentElement.requestFullscreen) {
-            await document.documentElement.requestFullscreen();
+            document.documentElement.requestFullscreen();
         } else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
-            await document.documentElement.mozRequestFullScreen();
+            document.documentElement.mozRequestFullScreen();
         } else if (document.documentElement.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-            await document.documentElement.webkitRequestFullscreen();
+            document.documentElement.webkitRequestFullscreen();
         } else if (document.documentElement.msRequestFullscreen) { /* IE/Edge */
-            await document.documentElement.msRequestFullscreen();
+            document.documentElement.msRequestFullscreen();
         }
 
-        await screen.orientation.lock("landscape-primary");
+        screen.orientation.lock("landscape-primary");
     } catch (error) {
         console.error("Failed to lock screen orientation:", error);
         if (error.name === "NotSupportedError") {
