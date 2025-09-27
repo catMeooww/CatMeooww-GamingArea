@@ -1,3 +1,8 @@
+var testMobile = /iPhone|Android|iPad/i.test(navigator.userAgent);
+        if (testMobile){
+            screen.orientation.lock('landscape');
+        }
+
 logged = false;
 
 isPaused = false;
@@ -9,41 +14,41 @@ player = "";
 room = "";
 world = 1;
 
-function loadPlayer(){
-    player = document.getElementById('player-name').value.replaceAll(" ","_");
-    room = document.getElementById('room-name').value.replaceAll(" ","_");
-    if (player != "" && room != ""){
+function loadPlayer() {
+    player = document.getElementById('player-name').value.replaceAll(" ", "_");
+    room = document.getElementById('room-name').value.replaceAll(" ", "_");
+    if (player != "" && room != "") {
         isJoining = false
         firebase.database().ref("/MultiDino/" + room + "/players/" + player + "/status").on("value", data => {
             isPlayerCreated = data.val();
-            if (!isJoining){
+            if (!isJoining) {
                 isJoining = true;
                 if (isPlayerCreated != "online") {
                     firebase.database().ref("/MultiDino/" + room + "/players/" + player).set({
-                        status:'online',
-                        world:1,
-                        x:0,
-                        y:200
+                        status: 'online',
+                        world: 1,
+                        x: 0,
+                        y: 200
                     });
                     document.getElementById("login-div").innerHTML = "<h3>Your Dino</h3><p id='dinodata'></p>";
-                    document.getElementById("connection").innerHTML = "Connected as "+player;
+                    document.getElementById("connection").innerHTML = "Connected as " + player;
                     worldData.loadWorldSprites(1);
                     logged = true;
-                }else{
+                } else {
                     document.getElementById("login-div").innerHTML = "<h3>Your Dino</h3><p id='dinodata'></p>";
-                    document.getElementById("connection").innerHTML = "Connected as "+player;
+                    document.getElementById("connection").innerHTML = "Connected as " + player;
 
                     loaded = false;
                     firebase.database().ref("/MultiDino/" + room + "/players/" + player + "/world").on("value", data => {
                         world = data.val();
-                        if (!loaded){
+                        if (!loaded) {
                             loaded = true;
                             worldData.loadWorldSprites(world);
                         }
                     });
 
                     firebase.database().ref("/MultiDino/" + room + "/players/" + player + "/x").on("value", data => {
-                        if (!logged){
+                        if (!logged) {
                             playerSprite.x = data.val();
                             logged = true;
                         }
@@ -73,14 +78,14 @@ function setup() {
     playerHolder = createSprite(0, 200, 20, 10);
     playerHolder.visible = false;
 
-    groundSprite1 = createSprite(550,347);
-    groundSprite1.addImage("1",grassImg);
-    groundSprite1.addImage("2",darkgrassImg);
+    groundSprite1 = createSprite(550, 347);
+    groundSprite1.addImage("1", grassImg);
+    groundSprite1.addImage("2", darkgrassImg);
     groundSprite1.scale = 10;
     groundSprite1.depth = 3;
-    groundSprite2 = createSprite(-150,347);
-    groundSprite2.addImage("1",grassImg);
-    groundSprite2.addImage("2",darkgrassImg);
+    groundSprite2 = createSprite(-150, 347);
+    groundSprite2.addImage("1", grassImg);
+    groundSprite2.addImage("2", darkgrassImg);
     groundSprite2.scale = 10;
     groundSprite2.depth = 3;
 
@@ -88,98 +93,106 @@ function setup() {
     imageMode(CENTER);
 }
 
+document.addEventListener('touchstart', () => {
+    isMouseDown = true;
+});
 document.addEventListener('mousedown', () => {
     isMouseDown = true;
 });
 document.addEventListener('mouseup', () => {
     isMouseDown = false;
 });
+document.addEventListener('touchend', () => {
+    isMouseDown = false;
+});
 
-function jump(){
-    if (playerHolder.isTouching(groundSprite1)||playerHolder.isTouching(worldData.groupblocks)){
-        playerSprite.velocityY = -15;
+function jump() {
+    if (!isPaused) {
+        if (playerHolder.isTouching(groundSprite1) || playerHolder.isTouching(worldData.groupblocks)) {
+            playerSprite.velocityY = -15;
+        }
     }
 }
 
-function finish(){
+function finish() {
     playerSprite.x = 0;
-    if (world == 2){
+    if (world == 2) {
         world = 1
-    }else{
-        world+=1;
+    } else {
+        world += 1;
     }
     worldData.resetWorld();
     worldData.loadWorldSprites(world)
     firebase.database().ref("/MultiDino/" + room + "/players/" + player).update({
-            world: world
+        world: world
     });
 }
 
-function draw(){
+function draw() {
     animBol += 1
-    if (animBol > 9){
+    if (animBol > 9) {
         animBol = 1;
     }
 
-    if(!logged){
+    if (!logged) {
         background("white");
-        if (animBol > 5){
-            image(dinoImg1,50,200,50,50)
-        }else{
-            image(dinoImg2,50,200,50,50)
+        if (animBol > 5) {
+            image(dinoImg1, 50, 200, 50, 50)
+        } else {
+            image(dinoImg2, 50, 200, 50, 50)
         }
         line(0, 225, windowWidth, 225)
-    }else{
-        document.getElementById("dinodata").innerHTML = "World: "+ world + "<br>";
-        if (world == 1){
+    } else {
+        document.getElementById("dinodata").innerHTML = "World: " + world + "<br>";
+        if (world == 1) {
             background("cyan");
             groundSprite1.changeImage("1");
             groundSprite2.changeImage("1");
-        } else if (world == 2){
+        } else if (world == 2) {
             background("blue");
             groundSprite1.changeImage("2");
             groundSprite2.changeImage("2");
         }
 
-        if (animBol > 5){
+        if (animBol > 5) {
             playerSprite.changeImage("1");
-        }else{
+        } else {
             playerSprite.changeImage("2");
         }
 
-        if(!isPaused){
+        if (!isPaused) {
             playerSprite.velocityY += 0.8;
-        }else{
-            text("PAUSED",playerSprite.x - 400,15)
+        } else {
+            text("PAUSED", playerSprite.x - 400, 15)
         }
 
         playerHolder.x = playerSprite.x;
         playerHolder.y = playerSprite.y + 30;
 
-        if (playerSprite.velocityX < 6 && !isPaused){
+        if (playerSprite.velocityX < 6 && !isPaused) {
             playerSprite.velocityX = 6;
         }
 
         if (keyDown("right")) {
-            if (playerSprite.velocityX < 12){
+            if (playerSprite.velocityX < 12) {
                 playerSprite.velocityX += 0.2;
             }
-        }else{
-            if (playerSprite.velocityX > 6){
+        } else {
+            if (playerSprite.velocityX > 6) {
                 playerSprite.velocityX -= 0.2;
             }
         }
 
-        if(keyDown("esc")){
+        if (keyDown("esc")) {
             playerSprite.velocityX = 0;
             playerSprite.velocityY = 0;
             isPaused = !isPaused;
         }
 
-        if (keyDown("up") || keyDown("w") || keyDown("space")){
+        if (keyDown("up") || keyDown("w") || keyDown("space")) {
             jump();
         }
-        if (isMouseDown){
+        if (isMouseDown) {
             jump()
         }
 
@@ -195,40 +208,40 @@ function draw(){
 
         playerSprite.collide(groundSprite1);
         playerSprite.collide(worldData.groupblocks);
-        if (playerSprite.isTouching(worldData.groupcactus)){
+        if (playerSprite.isTouching(worldData.groupcactus)) {
             playerSprite.x = -5;
         }
-        if (playerSprite.x > worldData.end.x){
+        if (playerSprite.x > worldData.end.x) {
             finish();
         }
 
-        document.getElementById("dinodata").innerHTML += "X: "+ Math.round(playerSprite.x) + "<br>";
-        document.getElementById("dinodata").innerHTML += "Y: "+ Math.round(playerSprite.y) + "<br>";
-        text("You",playerSprite.x - 5,15)
+        document.getElementById("dinodata").innerHTML += "X: " + Math.round(playerSprite.x) + "<br>";
+        document.getElementById("dinodata").innerHTML += "Y: " + Math.round(playerSprite.y) + "<br>";
+        text("You", playerSprite.x - 5, 15)
         camera.x = playerSprite.x + 200
         drawSprites();
 
         playersReaded = false;
         firebase.database().ref("/MultiDino/" + room + "/players/").on('value', function (snapshot) {
-            if (!playersReaded){
+            if (!playersReaded) {
                 playersReaded = true;
                 snapshot.forEach(function (childSnapshot) {
                     childKey = childSnapshot.key; childData = childSnapshot.val();
-        
+
                     firebaseMessageId = childKey;
                     onlineData = childData;
-        
+
                     onlineWorld = onlineData['world'];
                     onlineX = onlineData['x'];
                     onlineY = onlineData['y'];
-        
-                    if (firebaseMessageId != player && onlineWorld == world){
-                        if (animBol > 5){
-                            image(dinoImg1,onlineX,onlineY,55,55)
-                            text(firebaseMessageId,onlineX - 10,15)
-                        }else{
-                            image(dinoImg2,onlineX,onlineY,55,55)
-                            text(firebaseMessageId,onlineX - 10,15)
+
+                    if (firebaseMessageId != player && onlineWorld == world) {
+                        if (animBol > 5) {
+                            image(dinoImg1, onlineX, onlineY, 55, 55)
+                            text(firebaseMessageId, onlineX - 10, 15)
+                        } else {
+                            image(dinoImg2, onlineX, onlineY, 55, 55)
+                            text(firebaseMessageId, onlineX - 10, 15)
                         }
                     }
                 });
