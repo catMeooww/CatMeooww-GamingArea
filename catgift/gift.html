@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift</title>
+    <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-database.js"></script>
+    <script src="../main.js"></script>
+    <script>
+        totalacess = 0;
+        totalprank = 0;
+        firebase.database().ref("/catgift/acess").on("value", data => {
+            totalacess = Number(data.val());
+        });
+        firebase.database().ref("/catgift/pranks").on("value", data => {
+            totalprank = Number(data.val());
+        });
+        function updateAccess() {
+            setTimeout(() => {
+                firebase.database().ref("/catgift/").update({
+                    acess: totalacess + 1
+                });
+            }, 1000);
+        }
+        function openBox() {
+            document.getElementById("prankaudio").play();
+            document.getElementById("text").innerHTML = "You got Pranked!";
+            document.getElementById("button").src = "cat.jpg";
+            document.getElementById("details").innerHTML = "<br>You are the " + (totalprank + 1) + "° of " + (totalacess + 1) + " to get pranked!!!";
+            firebase.database().ref("/catgift/").update({
+                pranks: totalprank + 1
+            });
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            background-color: black;
+            border: double white 4px;
+            text-align: center;
+            color: aliceblue;
+            overflow: hidden;
+            cursor: cell;
+        }
+
+        button {
+            background-color: rgba(0, 0, 0, 0);
+            border: rgba(0, 0, 0, 0) solid 1px;
+            cursor: pointer;
+        }
+
+        img {
+            width: 500px;
+        }
+    </style>
+</head>
+
+<body onload="updateAccess()">
+    <audio id="prankaudio" src="gd_music.mp3"></audio>
+    <h2 id="text">Open your Box:</h2>
+    <button onclick="openBox()">
+        <img id="button" src="giftbox.png">
+    </button>
+    <label id="details"></label>
+</body>
+
+</html>
