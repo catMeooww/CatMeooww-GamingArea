@@ -58,8 +58,11 @@ function preload() {
     dinoImg1 = loadImage("dinossaur1.png");
     dinoImg2 = loadImage("dinossaur2.png");
     cactusImg = loadImage("cactus.png");
+    darkcactusImg = loadImage("darkcactus.png");
+    mushcactusImg = loadImage("mushroom_cactus.png");
     grassImg = loadImage("grass.png");
     darkgrassImg = loadImage("darkgrass.png");
+    mushgrassImg = loadImage("mushroom_grass.png");
     enderImg = loadImage("end_teleporter.png");
 }
 function setup() {
@@ -76,11 +79,13 @@ function setup() {
     groundSprite1 = createSprite(550, 347);
     groundSprite1.addImage("1", grassImg);
     groundSprite1.addImage("2", darkgrassImg);
+    groundSprite1.addImage("3", mushgrassImg);
     groundSprite1.scale = 10;
     groundSprite1.depth = 3;
     groundSprite2 = createSprite(-150, 347);
     groundSprite2.addImage("1", grassImg);
     groundSprite2.addImage("2", darkgrassImg);
+    groundSprite2.addImage("3", mushgrassImg);
     groundSprite2.scale = 10;
     groundSprite2.depth = 3;
 
@@ -111,7 +116,7 @@ function jump() {
 
 function finish() {
     playerSprite.x = 0;
-    if (world == 2) {
+    if (world == 3) {
         world = 1
     } else {
         world += 1;
@@ -147,16 +152,19 @@ function draw() {
             background("blue");
             groundSprite1.changeImage("2");
             groundSprite2.changeImage("2");
-        }
-
-        if (animBol > 5) {
-            playerSprite.changeImage("1");
-        } else {
-            playerSprite.changeImage("2");
+        } else if (world == 3) {
+            background("pink");
+            groundSprite1.changeImage("3");
+            groundSprite2.changeImage("3");
         }
 
         if (!isPaused) {
             playerSprite.velocityY += 0.8;
+            if (animBol > 5) {
+                playerSprite.changeImage("1");
+            } else {
+                playerSprite.changeImage("2");
+            }
         } else {
             text("PAUSED", playerSprite.x - 400, 15)
         }
