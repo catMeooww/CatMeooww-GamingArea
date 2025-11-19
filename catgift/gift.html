@@ -11,27 +11,38 @@
     <script>
         totalacess = 0;
         totalprank = 0;
+        acessed = false;
+        pranked = false;
+
         firebase.database().ref("/catgift/acess").on("value", data => {
             totalacess = Number(data.val());
         });
         firebase.database().ref("/catgift/pranks").on("value", data => {
             totalprank = Number(data.val());
         });
+
         function updateAccess() {
-            setTimeout(() => {
-                firebase.database().ref("/catgift/").update({
-                    acess: totalacess + 1
-                });
-            }, 1000);
+            if (!acessed) {
+                setTimeout(() => {
+                    acessed = true;
+                    firebase.database().ref("/catgift/").update({
+                        acess: totalacess + 1
+                    });
+                }, 1000);
+            }
         }
+
         function openBox() {
-            document.getElementById("prankaudio").play();
-            document.getElementById("text").innerHTML = "You got Pranked!";
-            document.getElementById("button").src = "cat.jpg";
-            document.getElementById("details").innerHTML = "<br>You are the " + (totalprank + 1) + "° of " + (totalacess + 1) + " to get pranked!!!";
-            firebase.database().ref("/catgift/").update({
-                pranks: totalprank + 1
-            });
+            if (!pranked) {
+                pranked = true;
+                firebase.database().ref("/catgift/").update({
+                    pranks: totalprank + 1
+                });
+                document.getElementById("prankaudio").play();
+                document.getElementById("text").innerHTML = "You got Pranked!";
+                document.getElementById("button").src = "cat.jpg";
+                document.getElementById("details").innerHTML = "<br>You are the " + (totalprank) + "° of " + (totalacess) + " to get pranked!!!";
+            }
         }
     </script>
     <style>

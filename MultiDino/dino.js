@@ -129,6 +129,7 @@ function finish() {
 }
 
 function draw() {
+    frameRate(80);
     animBol += 1
     if (animBol > 9) {
         animBol = 1;

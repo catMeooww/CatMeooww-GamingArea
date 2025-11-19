@@ -87,6 +87,11 @@
                     <img src="gamesIcon/multidino_bg.png">
                     <h3>Multi Dino</h3>
                 </section>
+                <section class="gameItem" id="deep-mines" onclick="redirect(8)"
+                onmouseover="bright(this.id)" onmouseleave="unbright(this.id)">
+                    <img src="gamesIcon/DeepMinesLogo.png">
+                    <h3>Deep Mines Game</h3>
+                </section>
             </section>
             <section>
                 <h2>Minecraft Mods</h2>
@@ -105,6 +110,7 @@
                 <h2>Minecraft Maps</h2>
             </section>
         </div>
+        <button style="float: left;background-color: black;color: gray;" onclick="redirect(9)">Secret</button>
         <b style="float: right;">@CatMeooww10</b>
     </center>
     <script>
@@ -136,6 +142,10 @@
                 window.location = 'MultiDino/game.html';
             }else if (to == 7){
                 window.location = 'https://mcreator.net/modification/62823/cat-minecraft';
+            }else if (to == 8){
+                window.location = 'https://catmeooww.github.io/Deep-Mines-Game/';
+            }else if (to == 9){
+                window.location = 'catgift/gift.html';
             }
         }
     </script>
