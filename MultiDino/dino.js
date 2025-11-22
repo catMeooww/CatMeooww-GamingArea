@@ -249,8 +249,6 @@ function draw() {
                         }
                     }
                 });
-            }else{
-                firebase.database().ref("/MultiDino/" + room + "/players/").off();
             }
         });
     }
