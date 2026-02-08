@@ -10,6 +10,7 @@
             font-family: Minecraft;
             src: url(Minecraft.ttf);
         }
+
         body {
             background-size: 100%;
             background-repeat: repeat-y;
@@ -26,8 +27,8 @@
             border: inset black 1px;
         }
 
-        h2{
-            color:green;
+        h2 {
+            color: green;
             border-bottom: 2px white ridge;
         }
 
@@ -45,14 +46,14 @@
             margin-top: 5px;
         }
 
-        a{
+        a {
             color: aqua;
             margin: 5px;
         }
     </style>
 </head>
 
-<body background="Stone Background.png">
+<body background="Stone Background.png" onload="catLabelCol()">
     <h1>CatMeooww10 Games</h1>
     <hr>
     <center>
@@ -62,46 +63,46 @@
         <div id="gameBox">
             <section>
                 <h2>Web Games</h2>
-                <section class="gameItem" id="crafty-adventure" onclick="redirect(1)"
-                 onmouseover="bright(this.id)" onmouseleave="unbright(this.id)">
-                    <img src="gamesIcon/craftyAdventureLogo.png">
-                    <h3>Crafty Adventure</h3>
-                </section>
-                <section class="gameItem" id="paper-survival" onclick="redirect(2)"
-                onmouseover="bright(this.id)" onmouseleave="unbright(this.id)">
+                <section class="gameItem" id="paper-survival" onclick="redirect(2)" onmouseover="bright(this.id)"
+                    onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/papersurvival.jpeg">
                     <h3>Paper Survival Game</h3>
                 </section>
-                <section class="gameItem" id="click-rush" onclick="redirect(3)"
-                onmouseover="bright(this.id)" onmouseleave="unbright(this.id)">
-                    <img src="gamesIcon/clickrush_bg.png">
-                    <h3>Click Rush</h3>
+                <section class="gameItem" id="crafty-adventure" onclick="redirect(1)" onmouseover="bright(this.id)"
+                    onmouseleave="unbright(this.id)">
+                    <img src="gamesIcon/craftyAdventureLogo.png">
+                    <h3>Adventorous World</h3>
                 </section>
-                <section class="gameItem" id="jumping-around" onclick="redirect(5)"
-                onmouseover="bright(this.id)" onmouseleave="unbright(this.id)">
-                    <img src="gamesIcon/slime.png">
-                    <h3>Jumping Around</h3>
-                </section>
-                <section class="gameItem" id="multi-dino" onclick="redirect(6)"
-                onmouseover="bright(this.id)" onmouseleave="unbright(this.id)">
+                <section class="gameItem" id="multi-dino" onclick="redirect(6)" onmouseover="bright(this.id)"
+                    onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/multidino_bg.png">
                     <h3>Multi Dino</h3>
                 </section>
-                <section class="gameItem" id="deep-mines" onclick="redirect(8)"
-                onmouseover="bright(this.id)" onmouseleave="unbright(this.id)">
+                <section class="gameItem" id="deep-mines" onclick="redirect(8)" onmouseover="bright(this.id)"
+                    onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/DeepMinesLogo.png">
                     <h3>Deep Mines Game</h3>
+                </section>
+                <section class="gameItem" id="click-rush" onclick="redirect(3)" onmouseover="bright(this.id)"
+                    onmouseleave="unbright(this.id)">
+                    <img src="gamesIcon/clickrush_bg.png">
+                    <h3>Click Rush</h3>
+                </section>
+                <section class="gameItem" id="jumping-around" onclick="redirect(5)" onmouseover="bright(this.id)"
+                    onmouseleave="unbright(this.id)">
+                    <img src="gamesIcon/slime.png">
+                    <h3>Jumping Around</h3>
                 </section>
             </section>
             <section>
                 <h2>Minecraft Mods</h2>
-                <section class="gameItem" id="crafty_minecraft" onclick="redirect(4)"
-                 onmouseover="bright(this.id)" onmouseleave="unbright(this.id)">
+                <section class="gameItem" id="crafty_minecraft" onclick="redirect(4)" onmouseover="bright(this.id)"
+                    onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/crafty_world_bg.png">
                     <h3>Crafty Adventure</h3>
                 </section>
-                <section class="gameItem" id="cat_mod" onclick="redirect(7)"
-                 onmouseover="bright(this.id)" onmouseleave="unbright(this.id)">
+                <section class="gameItem" id="cat_mod" onclick="redirect(7)" onmouseover="bright(this.id)"
+                    onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/OLDCatCraft_bg.png">
                     <h3>OLD - Cat Minecraft</h3>
                 </section>
@@ -111,40 +112,45 @@
             </section>
         </div>
         <button style="float: left;background-color: black;color: gray;" onclick="redirect(9)">Secret</button>
-        <b style="float: right;">@CatMeooww10</b>
+        <b id="catlabel" style="float: right;">@CatMeooww10</b>
     </center>
     <script>
-        function bright(id){
-           r = Math.floor(Math.random() *255);
-           g = Math.floor(Math.random() *255);
-           b = Math.floor(Math.random() *255);
-           color = "rgb("+r+","+g+","+b+")";
-           document.getElementById(id).style.borderColor = color;
-           console.log(color);
+        function catLabelCol() {
+            r = Math.floor(Math.random() * 255);
+            g = Math.floor(Math.random() * 255);
+            b = Math.floor(Math.random() * 255);
+            color = "rgb(" + r + "," + g + "," + b + ")";
+            document.getElementById("catlabel").style.color = color;
         }
-        function unbright(id){
+        function bright(id) {
+            r = Math.floor(Math.random() * 255);
+            g = Math.floor(Math.random() * 255);
+            b = Math.floor(Math.random() * 255);
+            color = "rgb(" + r + "," + g + "," + b + ")";
+            document.getElementById(id).style.borderColor = color;
+        }
+        function unbright(id) {
             document.getElementById(id).style.borderColor = "black";
-            console.clear();
         }
 
-        function redirect(to){
-            if(to==1){
-                window.location = 'https://catmeooww.github.io/Crafty-Adventure/';
-            }else if(to == 2){
+        function redirect(to) {
+            if (to == 1) {
+                window.location = 'https://catmeooww.github.io/Crafty-Adventure-Classical/';
+            } else if (to == 2) {
                 window.location = 'https://catmeooww.github.io/Paper-Survival-Game/';
-            }else if(to == 3){
-              window.location = 'clickRush/game.html';
-            }else if(to == 4){
+            } else if (to == 3) {
+                window.location = 'clickRush/game.html';
+            } else if (to == 4) {
                 window.location = 'https://www.curseforge.com/minecraft/mc-mods/crafty-world';
-            }else if (to == 5){
+            } else if (to == 5) {
                 window.location = 'https://catmeooww.github.io/Jumping-Around/';
-            }else if (to == 6){
+            } else if (to == 6) {
                 window.location = 'MultiDino/game.html';
-            }else if (to == 7){
+            } else if (to == 7) {
                 window.location = 'https://mcreator.net/modification/62823/cat-minecraft';
-            }else if (to == 8){
+            } else if (to == 8) {
                 window.location = 'https://catmeooww.github.io/Deep-Mines-Game/';
-            }else if (to == 9){
+            } else if (to == 9) {
                 window.location = 'catgift/gift.html';
             }
         }
