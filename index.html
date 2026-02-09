@@ -68,7 +68,7 @@
                     <img src="gamesIcon/papersurvival.jpeg">
                     <h3>Paper Survival Game</h3>
                 </section>
-                <section class="gameItem" id="crafty-adventure" onclick="redirect(1)" onmouseover="bright(this.id)"
+                <section class="gameItem" id="adventorous-world" onclick="redirect(1)" onmouseover="bright(this.id)"
                     onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/craftyAdventureLogo.png">
                     <h3>Adventorous World</h3>
@@ -88,6 +88,11 @@
                     <img src="gamesIcon/clickrush_bg.png">
                     <h3>Click Rush</h3>
                 </section>
+                <section class="gameItem" id="crafty-adventure" onclick="redirect(11)" onmouseover="bright(this.id)"
+                    onmouseleave="unbright(this.id)">
+                    <img src="gamesIcon/craftyAdventureLogo.png">
+                    <h3>Classic Crafty Adventure</h3>
+                </section>
                 <section class="gameItem" id="jumping-around" onclick="redirect(5)" onmouseover="bright(this.id)"
                     onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/slime.png">
@@ -99,7 +104,7 @@
                 <section class="gameItem" id="crafty_minecraft" onclick="redirect(4)" onmouseover="bright(this.id)"
                     onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/crafty_world_bg.png">
-                    <h3>Crafty Adventure</h3>
+                    <h3>Crafty World</h3>
                 </section>
                 <section class="gameItem" id="cat_mod" onclick="redirect(7)" onmouseover="bright(this.id)"
                     onmouseleave="unbright(this.id)">
@@ -109,6 +114,11 @@
             </section>
             <section>
                 <h2>Minecraft Maps</h2>
+                <section class="gameItem" id="great-minecraft-map" onclick="redirect(10)" onmouseover="bright(this.id)"
+                    onmouseleave="unbright(this.id)">
+                    <img src="gamesIcon/GreatMinecraft_map_bg.png">
+                    <h3>The Great Minecraft World</h3>
+                </section>
             </section>
         </div>
         <button style="float: left;background-color: black;color: gray;" onclick="redirect(9)">Secret</button>
@@ -152,6 +162,10 @@
                 window.location = 'https://catmeooww.github.io/Deep-Mines-Game/';
             } else if (to == 9) {
                 window.location = 'catgift/gift.html';
+            }else if (to == 10) {
+                window.location = 'https://www.planetminecraft.com/project/the-great-minecraft-world/'
+            }else if (to == 11) {
+                window.location = 'https://catmeooww.github.io/Crafty-Adventure-Classical/'
             }
         }
     </script>
