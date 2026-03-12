@@ -1,56 +1,117 @@
 logged = false;
 
 isPaused = false;
-animBol = 0;
+lowUpdates = 0;
 
-worldData = new LevelData();
-
+onlinePlayers = [];
+thismap = [];
 player = "";
 room = "";
-world = 1;
+world = 0;
 
-function loadPlayer() {
-    player = document.getElementById('player-name').value.replaceAll(" ", "_");
-    room = document.getElementById('room-name').value.replaceAll(" ", "_");
-    if (player != "" && room != "") {
-        isJoining = false
-        firebase.database().ref("/MultiDino/" + room + "/players/" + player + "/status").on("value", data => {
-            isPlayerCreated = data.val();
-            if (!isJoining) {
-                isJoining = true;
-                if (isPlayerCreated != "online") {
-                    firebase.database().ref("/MultiDino/" + room + "/players/" + player).set({
-                        status: 'online',
-                        world: 1,
-                        x: 0,
-                        y: 200
-                    });
-                    document.getElementById("login-div").innerHTML = "<h3>Your Dino</h3><p id='dinodata'></p>";
-                    document.getElementById("connection").innerHTML = "Connected as " + player;
-                    worldData.loadWorldSprites(1);
-                    logged = true;
-                } else {
-                    document.getElementById("login-div").innerHTML = "<h3>Your Dino</h3><p id='dinodata'></p>";
-                    document.getElementById("connection").innerHTML = "Connected as " + player;
+playerX = 0;
+playerY = 0;
+velocityX = 0;
+velocityY = 0;
+onground = false;
 
-                    loaded = false;
-                    firebase.database().ref("/MultiDino/" + room + "/players/" + player + "/world").on("value", data => {
-                        world = data.val();
-                        if (!loaded) {
-                            loaded = true;
-                            worldData.loadWorldSprites(world);
-                        }
-                    });
+gameWidth = window.innerWidth - 25;
+gameHeight = 300;
 
-                    firebase.database().ref("/MultiDino/" + room + "/players/" + player + "/x").on("value", data => {
-                        if (!logged) {
-                            playerSprite.x = data.val();
-                            logged = true;
-                        }
-                    });
-                }
-            }
+function updateWorld() {
+    world += 1;
+    if (world > mapConfigs.length) {
+        world = 1;
+    }
+    firebase.database().ref("/MultiDino/" + room + "/worlds/" + world).once('value', function (snapshot) {
+        thismap = [];
+        snapshot.forEach(function (childSnapshot) {
+            childKey = childSnapshot.key; childData = childSnapshot.val();
+            thismap.push(childData);
         });
+    })
+    replacePlayer();
+}
+
+function replacePlayer() {
+    playerX = 0;
+    playerY = 200;
+    firebase.database().ref("/MultiDino/" + room + "/players/" + player).set({
+        world: world,
+        x: playerX,
+        y: playerY,
+        color: color
+    });
+}
+
+async function startPlay() {
+    await firebase.database().ref("/MultiDino/" + room + "/players/" + player).once('value', data => {
+        try {
+            playerData = data.val();
+            world = playerData['world'];
+            playerX = playerData['x'];
+            playerY = playerData['y'];
+        } catch {
+            world = 1;
+            replacePlayer();
+        }
+    })
+    await firebase.database().ref("/MultiDino/" + room + "/worlds/" + world).once('value', function (snapshot) {
+        thismap = [];
+        snapshot.forEach(function (childSnapshot) {
+            childKey = childSnapshot.key; childData = childSnapshot.val();
+            thismap.push(childData);
+        });
+    })
+    firebase.database().ref("/MultiDino/" + room + "/players/").on('value', function (snapshot) {
+        thisPlayers = [];
+        snapshot.forEach(function (childSnapshot) {
+            childKey = childSnapshot.key; childData = childSnapshot.val();
+            thisPlayers.push([childKey, childData["world"], childData["x"], childData["y"], childData["color"]])
+        });
+        onlinePlayers = thisPlayers;
+    })
+    logged = true;
+    document.getElementById("login-div").innerHTML = "";
+    document.getElementById("connection").innerHTML = "Connected in " + room + " as " + player;
+}
+
+function joinRoom() {
+    room = document.getElementById("room-name").value;
+    player = document.getElementById("player-name").value;
+    if (room != "" && player != "") {
+        firebase.database().ref("/MultiDino/" + room + "/status/").once('value', data => {
+            if (data.val() == "online") {
+                startPlay();
+            } else {
+                document.getElementById("room-name").style.borderColor = "red";
+            }
+        })
+    } else {
+        document.getElementById("room-name").style.borderColor = "yellow";
+        document.getElementById("player-name").style.borderColor = "yellow";
+    }
+}
+
+function createRoom() {
+    room = document.getElementById("room-name").value;
+    player = document.getElementById("player-name").value;
+    if (room != "" && player != "") {
+        firebase.database().ref("/MultiDino/" + room + "/status/").once('value', data => {
+            if (data.val() == "online") {
+                document.getElementById("room-name").style.borderColor = "red";
+            } else {
+                map = generateMap();
+                firebase.database().ref("/MultiDino/" + room).update({
+                    status: "online",
+                    worlds: map
+                });
+                startPlay();
+            }
+        })
+    } else {
+        document.getElementById("room-name").style.borderColor = "yellow";
+        document.getElementById("player-name").style.borderColor = "yellow";
     }
 }
 
@@ -60,37 +121,166 @@ function preload() {
     cactusImg = loadImage("cactus.png");
     darkcactusImg = loadImage("darkcactus.png");
     mushcactusImg = loadImage("mushroom_cactus.png");
+    geometrycactusImg = loadImage("geometry_cactus.png");
     grassImg = loadImage("grass.png");
     darkgrassImg = loadImage("darkgrass.png");
     mushgrassImg = loadImage("mushroom_grass.png");
+    geometrygrassImg = loadImage("geometry_grass.png");
     enderImg = loadImage("end_teleporter.png");
 }
+
 function setup() {
-    canvas = createCanvas(windowWidth - 50, 300);
+    canvas = createCanvas(gameWidth, gameHeight);
     canvas.parent("canvas-div");
+    color = [Math.floor(Math.random() * 200), Math.floor(Math.random() * 200), Math.floor(Math.random() * 200)];
+}
 
-    playerSprite = createSprite(0, 150);
-    playerSprite.addImage("1", dinoImg1);
-    playerSprite.addImage("2", dinoImg2);
-    playerSprite.scale = 0.15;
-    playerHolder = createSprite(0, 200, 20, 10);
-    playerHolder.visible = false;
+function collision(ax, ay, bx, by) {
+    if (ax < bx + 50 && ax + 50 > bx && ay < by + 50 && ay + 50 > by) {
+        return true;
+    }
+    return false;
+}
 
-    groundSprite1 = createSprite(550, 347);
-    groundSprite1.addImage("1", grassImg);
-    groundSprite1.addImage("2", darkgrassImg);
-    groundSprite1.addImage("3", mushgrassImg);
-    groundSprite1.scale = 10;
-    groundSprite1.depth = 3;
-    groundSprite2 = createSprite(-150, 347);
-    groundSprite2.addImage("1", grassImg);
-    groundSprite2.addImage("2", darkgrassImg);
-    groundSprite2.addImage("3", mushgrassImg);
-    groundSprite2.scale = 10;
-    groundSprite2.depth = 3;
+function drawBlock(x, y) {
+    if (world == 1) {
+        image(grassImg, x, y, 50, 50);
+    } else if (world == 2) {
+        image(darkgrassImg, x, y, 50, 50);
+    } else if (world == 3) {
+        image(mushgrassImg, x, y, 50, 50);
+    } else if (world == 4) {
+        image(geometrygrassImg, x, y, 50, 50)
+    }
+}
 
-    frameRate(80);
-    imageMode(CENTER);
+function drawCactus(x, y) {
+    if (world == 1) {
+        image(cactusImg, x, y, 50, 50);
+    } else if (world == 2) {
+        image(darkcactusImg, x, y, 50, 50);
+    } else if (world == 3) {
+        image(mushcactusImg, x, y, 50, 50);
+    } else if (world == 4) {
+        image(geometrycactusImg, x, y, 50, 50);
+    }
+}
+
+function draw() {
+    background("white");
+    tint(255);
+    if (logged) {
+        background(mapConfigs[world - 1]["bg"]);
+        //controls
+        velocityY += 0.8;
+        if (velocityX < 10) {
+            velocityX = 10;
+        } else if (keyDown("right") || keyDown("d")) {
+            velocityX += 0.1;
+        } else if (keyDown("left") || keyDown("a")) {
+            velocityX -= 0.1;
+        } else if (velocityX < 12) {
+            velocityX += 0.01;
+        }
+        if ((keyDown("space") || keyDown("up") || keyDown("w") || isMouseDown) && onground) {
+            velocityY = -12;
+        }
+        //ground
+        if (world == 1) {
+            image(grassImg, camera.x - gameWidth / 2, 250, gameWidth, 100);
+        } else if (world == 2) {
+            image(darkgrassImg, camera.x - gameWidth / 2, 250, gameWidth, 100);
+        } else if (world == 3) {
+            image(mushgrassImg, camera.x - gameWidth / 2, 250, gameWidth, 100);
+        } else if (world == 4) {
+            image(geometrygrassImg, camera.x - gameWidth / 2, 250, gameWidth, 100);
+        }
+        if (playerY + velocityY > 200) {
+            velocityY = 0;
+            onground = true;
+        } else {
+            onground = false;
+        }
+        //map
+        for (obstacle of thismap) {
+            if (Math.abs(camera.x - 25 - obstacle["x"]) < gameWidth / 2) {
+                if (obstacle["type"] == "cactus") {
+                    drawCactus(obstacle["x"], obstacle["y"]);
+                    if (collision(playerX, playerY, obstacle["x"], obstacle["y"])) {
+                        playerX = 0;
+                        velocityX = 0;
+                    }
+                } else if (obstacle["type"] == "block") {
+                    drawBlock(obstacle["x"], obstacle["y"]);
+                    if (collision(playerX + velocityX, playerY, obstacle["x"], obstacle["y"])) {
+                        velocityX = 0;
+                    }
+                    if (collision(playerX, playerY + velocityY, obstacle["x"], obstacle["y"])) {
+                        velocityY = 0;
+                    }
+                } else if (obstacle["type"] == "end") {
+                    image(enderImg, obstacle["x"], obstacle["y"], 50, 50)
+                }
+            }
+        }
+        //player
+        playerX += velocityX;
+        playerY += velocityY;
+        if (playerX > (mapConfigs[world - 1]["end"] * 50) + 25) {
+            updateWorld()
+        }
+        tint(color[0], color[1], color[2]);
+        if (lowUpdates < 10) {
+            image(dinoImg1, playerX, playerY, 50, 50);
+        } else {
+            image(dinoImg2, playerX, playerY, 50, 50);
+        }
+        camera.x = playerX + gameWidth / 3;
+        firebase.database().ref("/MultiDino/" + room + "/players/" + player).update({
+            x: Math.floor(playerX),
+            y: Math.floor(playerY)
+        })
+        //players
+        onlinePlayers.forEach(thisplayer => {
+            if (thisplayer[1] == world && thisplayer[0] != player) {
+                tint(thisplayer[4][0], thisplayer[4][1], thisplayer[4][2]);
+                text(thisplayer[0], thisplayer[2], thisplayer[3] - 10);
+                if (lowUpdates < 10) {
+                    image(dinoImg1, thisplayer[2], thisplayer[3], 50, 50);
+                } else {
+                    image(dinoImg2, thisplayer[2], thisplayer[3], 50, 50);
+                }
+            }
+        })
+    } else {
+        stroke(2);
+        tint(color[0], color[1], color[2]);
+        if (lowUpdates < 10) {
+            image(dinoImg1, 20, 200, 50, 50);
+        } else {
+            image(dinoImg2, 20, 200, 50, 50);
+        }
+        line(0, 250, gameWidth, 250);
+    }
+    if (lowUpdates >= 20) {
+        lowUpdates = 0;
+        if (logged) {
+            worldLabel = "<h3>World: " + mapConfigs[world - 1]["theme"] + "</h3>";
+            positionLabel = "<h3>Position X: " + Math.floor(playerX) + " Position Y: " + Math.floor(playerY) + "</h3>";
+            colorLabel = "<h3>Your Dino: RGB " + color[0] + " " + color[1] + " " + color[2] + "</h3>";
+            resetLabel = "<button onclick='reset()'>Reset</button>";
+            document.getElementById("login-div").innerHTML = worldLabel + positionLabel + colorLabel + resetLabel;
+        }
+    } else {
+        lowUpdates += 1;
+    }
+}
+
+function reset() {
+    firebase.database().ref("/MultiDino/" + room).update({
+        status: "reset"
+    });
+    location.reload();
 }
 
 document.addEventListener('touchstart', () => {
@@ -105,150 +295,3 @@ document.addEventListener('mouseup', () => {
 document.addEventListener('touchend', () => {
     isMouseDown = false;
 });
-
-function jump() {
-    if (!isPaused) {
-        if (playerHolder.isTouching(groundSprite1) || playerHolder.isTouching(worldData.groupblocks)) {
-            playerSprite.velocityY = -15;
-        }
-    }
-}
-
-function finish() {
-    playerSprite.x = 0;
-    if (world == 3) {
-        world = 1
-    } else {
-        world += 1;
-    }
-    worldData.resetWorld();
-    worldData.loadWorldSprites(world)
-    firebase.database().ref("/MultiDino/" + room + "/players/" + player).update({
-        world: world
-    });
-}
-
-function draw() {
-    animBol += 1
-    if (animBol > 9) {
-        animBol = 1;
-    }
-
-    if (!logged) {
-        background("white");
-        if (animBol > 5) {
-            image(dinoImg1, 50, 200, 50, 50)
-        } else {
-            image(dinoImg2, 50, 200, 50, 50)
-        }
-        line(0, 225, windowWidth, 225)
-    } else {
-        document.getElementById("dinodata").innerHTML = "World: " + world + "<br>";
-        if (world == 1) {
-            background("cyan");
-            groundSprite1.changeImage("1");
-            groundSprite2.changeImage("1");
-        } else if (world == 2) {
-            background("blue");
-            groundSprite1.changeImage("2");
-            groundSprite2.changeImage("2");
-        } else if (world == 3) {
-            background("pink");
-            groundSprite1.changeImage("3");
-            groundSprite2.changeImage("3");
-        }
-
-        if (!isPaused) {
-            playerSprite.velocityY += 0.8;
-            if (animBol > 5) {
-                playerSprite.changeImage("1");
-            } else {
-                playerSprite.changeImage("2");
-            }
-        } else {
-            text("PAUSED", playerSprite.x - 400, 15)
-        }
-
-        playerHolder.x = playerSprite.x;
-        playerHolder.y = playerSprite.y + 30;
-
-        if (playerSprite.velocityX < 6 && !isPaused) {
-            playerSprite.velocityX = 6;
-        }
-
-        if (keyDown("right")) {
-            if (playerSprite.velocityX < 12) {
-                playerSprite.velocityX += 0.2;
-            }
-        } else {
-            if (playerSprite.velocityX > 6) {
-                playerSprite.velocityX -= 0.2;
-            }
-        }
-
-        if (keyDown("esc")) {
-            playerSprite.velocityX = 0;
-            playerSprite.velocityY = 0;
-            isPaused = !isPaused;
-        }
-
-        if (keyDown("up") || keyDown("w") || keyDown("space")) {
-            jump();
-        }
-        if (isMouseDown) {
-            jump()
-        }
-
-        firebase.database().ref("/MultiDino/" + room + "/players/" + player).update({
-            x: Math.round(playerSprite.x)
-        });
-        firebase.database().ref("/MultiDino/" + room + "/players/" + player).update({
-            y: Math.round(playerSprite.y)
-        });
-
-        groundSprite2.x = playerSprite.x + 550;
-        groundSprite1.x = playerSprite.x - 150;
-
-        playerSprite.collide(groundSprite1);
-        playerSprite.collide(worldData.groupblocks);
-        if (playerSprite.isTouching(worldData.groupcactus)) {
-            playerSprite.x = -5;
-        }
-        if (playerSprite.x > worldData.end.x) {
-            finish();
-        }
-
-        document.getElementById("dinodata").innerHTML += "X: " + Math.round(playerSprite.x) + "<br>";
-        document.getElementById("dinodata").innerHTML += "Y: " + Math.round(playerSprite.y) + "<br>";
-        text("You", playerSprite.x - 5, 15)
-        camera.x = playerSprite.x + 200
-        drawSprites();
-
-        playersReaded = false;
-        firebase.database().ref("/MultiDino/" + room + "/players/").on('value', function (snapshot) {
-            if (!playersReaded) {
-                playersReaded = true;
-                snapshot.forEach(function (childSnapshot) {
-                    childKey = childSnapshot.key; childData = childSnapshot.val();
-
-                    firebaseMessageId = childKey;
-                    onlineData = childData;
-
-                    onlineWorld = onlineData['world'];
-                    onlineX = onlineData['x'];
-                    onlineY = onlineData['y'];
-
-                    if (firebaseMessageId != player && onlineWorld == world) {
-                        if (animBol > 5) {
-                            image(dinoImg1, onlineX, onlineY, 55, 55)
-                            text(firebaseMessageId, onlineX - 10, 15)
-                        } else {
-                            image(dinoImg2, onlineX, onlineY, 55, 55)
-                            text(firebaseMessageId, onlineX - 10, 15)
-                        }
-                    }
-                });
-            }
-        });
-    }
-}

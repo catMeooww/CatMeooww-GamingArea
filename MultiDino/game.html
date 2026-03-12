@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Multi Dino</title>
+    <link rel="shortcut icon" href="cactus.png" type="image/png">
     <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-database.js"></script>
     <script src="../p5.dom.min.js"></script>
@@ -33,13 +34,17 @@
 
 <body>
     <h1 id="connection">Connecting to Dino</h1>
+    <div></div>
     <div id="canvas-div">
 
     </div>
     <div id="login-div">
+        <label>Player</label>
         <input id="player-name" placeholder="your nickname">
+        <label>Room ID:</label>
         <input id="room-name" placeholder="room">
-        <button onclick="loadPlayer()">Join Game</button>
+        <button onclick="joinRoom()">Join Room</button>
+        <button onclick="createRoom()">Create Room</button>
     </div>
 </body>
 

@@ -33,10 +33,16 @@
         }
 
         .gameItem {
-            background-color: rgb(40, 40, 40);
+            background-color: rgba(40, 40, 40,0.9);
             border: 2px outset black;
             margin: 20px;
+            transition: 0.5s;
+        }
+
+        .gameItem:hover{
             cursor: pointer;
+            background-color: rgb(40, 40, 40);
+            box-shadow: 2px 2px 2px goldenrod;
         }
 
         .gameItem img {
@@ -63,37 +69,37 @@
         <div id="gameBox">
             <section>
                 <h2>Web Games</h2>
-                <section class="gameItem" id="paper-survival" onclick="redirect(2)" onmouseover="bright(this.id)"
+                <section class="gameItem" id="paper-survival" onclick="redirect(2)" onmouseenter="bright(this.id)"
                     onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/papersurvival.jpeg">
                     <h3>Paper Survival Game</h3>
                 </section>
-                <section class="gameItem" id="adventorous-world" onclick="redirect(1)" onmouseover="bright(this.id)"
+                <section class="gameItem" id="adventorous-world" onclick="redirect(1)" onmouseenter="bright(this.id)"
                     onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/AdventurousWorld_bg.png">
                     <h3>Adventorous World</h3>
                 </section>
-                <section class="gameItem" id="multi-dino" onclick="redirect(6)" onmouseover="bright(this.id)"
+                <section class="gameItem" id="multi-dino" onclick="redirect(6)" onmouseenter="bright(this.id)"
                     onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/multidino_bg.png">
                     <h3>Multi Dino</h3>
                 </section>
-                <section class="gameItem" id="deep-mines" onclick="redirect(8)" onmouseover="bright(this.id)"
+                <section class="gameItem" id="deep-mines" onclick="redirect(8)" onmouseenter="bright(this.id)"
                     onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/DeepMinesLogo.png">
                     <h3>Deep Mines Game</h3>
                 </section>
-                <section class="gameItem" id="click-rush" onclick="redirect(3)" onmouseover="bright(this.id)"
+                <section class="gameItem" id="click-rush" onclick="redirect(3)" onmouseenter="bright(this.id)"
                     onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/clickrush_bg.png">
                     <h3>Click Rush</h3>
                 </section>
-                <section class="gameItem" id="crafty-adventure" onclick="redirect(11)" onmouseover="bright(this.id)"
+                <section class="gameItem" id="crafty-adventure" onclick="redirect(11)" onmouseenter="bright(this.id)"
                     onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/craftyAdventureLogo.png">
                     <h3>Classic Crafty Adventure</h3>
                 </section>
-                <section class="gameItem" id="jumping-around" onclick="redirect(5)" onmouseover="bright(this.id)"
+                <section class="gameItem" id="jumping-around" onclick="redirect(5)" onmouseenter="bright(this.id)"
                     onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/slime.png">
                     <h3>Jumping Around</h3>
@@ -101,12 +107,12 @@
             </section>
             <section>
                 <h2>Minecraft Mods</h2>
-                <section class="gameItem" id="crafty_minecraft" onclick="redirect(4)" onmouseover="bright(this.id)"
+                <section class="gameItem" id="crafty_minecraft" onclick="redirect(4)" onmouseenter="bright(this.id)"
                     onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/crafty_world_bg.png">
                     <h3>Crafty World</h3>
                 </section>
-                <section class="gameItem" id="cat_mod" onclick="redirect(7)" onmouseover="bright(this.id)"
+                <section class="gameItem" id="cat_mod" onclick="redirect(7)" onmouseenter="bright(this.id)"
                     onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/OLDCatCraft_bg.png">
                     <h3>OLD - Cat Minecraft</h3>
@@ -114,7 +120,7 @@
             </section>
             <section>
                 <h2>Minecraft Maps</h2>
-                <section class="gameItem" id="great-minecraft-map" onclick="redirect(10)" onmouseover="bright(this.id)"
+                <section class="gameItem" id="great-minecraft-map" onclick="redirect(10)" onmouseenter="bright(this.id)"
                     onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/GreatMinecraft_map_bg.png">
                     <h3>The Great Minecraft World</h3>
