@@ -74,6 +74,8 @@ async function startPlay() {
     logged = true;
     document.getElementById("login-div").innerHTML = "";
     document.getElementById("connection").innerHTML = "Connected in " + room + " as " + player;
+    document.getElementById("pauseBTN").innerHTML = "PAUSE GAME";
+    document.getElementById("leaveBTN").innerHTML = "RESPAWN";
 }
 
 function joinRoom() {
@@ -122,10 +124,12 @@ function preload() {
     darkcactusImg = loadImage("darkcactus.png");
     mushcactusImg = loadImage("mushroom_cactus.png");
     geometrycactusImg = loadImage("geometry_cactus.png");
+    forestcactusImg = loadImage("forestcactus.png");
     grassImg = loadImage("grass.png");
     darkgrassImg = loadImage("darkgrass.png");
     mushgrassImg = loadImage("mushroom_grass.png");
     geometrygrassImg = loadImage("geometry_grass.png");
+    forestgrassImg = loadImage("forestgrass.png");
     enderImg = loadImage("end_teleporter.png");
 }
 
@@ -133,6 +137,20 @@ function setup() {
     canvas = createCanvas(gameWidth, gameHeight);
     canvas.parent("canvas-div");
     color = [Math.floor(Math.random() * 200), Math.floor(Math.random() * 200), Math.floor(Math.random() * 200)];
+    //resize
+    dinoImg1.resize(50, 50);
+    dinoImg2.resize(50, 50);
+    cactusImg.resize(50, 50);
+    darkcactusImg.resize(50, 50);
+    mushcactusImg.resize(50, 50);
+    geometrycactusImg.resize(50, 50);
+    forestcactusImg.resize(50, 50);
+    grassImg.resize(50, 50);
+    darkgrassImg.resize(50, 50);
+    mushgrassImg.resize(50, 50);
+    geometrygrassImg.resize(50, 50);
+    forestgrassImg.resize(50, 50);
+    enderImg.resize(50, 50);
 }
 
 function collision(ax, ay, bx, by) {
@@ -144,25 +162,29 @@ function collision(ax, ay, bx, by) {
 
 function drawBlock(x, y) {
     if (world == 1) {
-        image(grassImg, x, y, 50, 50);
+        image(grassImg, x, y);
     } else if (world == 2) {
-        image(darkgrassImg, x, y, 50, 50);
+        image(darkgrassImg, x, y);
     } else if (world == 3) {
-        image(mushgrassImg, x, y, 50, 50);
+        image(mushgrassImg, x, y);
     } else if (world == 4) {
-        image(geometrygrassImg, x, y, 50, 50)
+        image(geometrygrassImg, x, y)
+    } else if (world == 5) {
+        image(forestgrassImg, x, y)
     }
 }
 
 function drawCactus(x, y) {
     if (world == 1) {
-        image(cactusImg, x, y, 50, 50);
+        image(cactusImg, x, y);
     } else if (world == 2) {
-        image(darkcactusImg, x, y, 50, 50);
+        image(darkcactusImg, x, y);
     } else if (world == 3) {
-        image(mushcactusImg, x, y, 50, 50);
+        image(mushcactusImg, x, y);
     } else if (world == 4) {
-        image(geometrycactusImg, x, y, 50, 50);
+        image(geometrycactusImg, x, y);
+    } else if (world == 5) {
+        image(forestcactusImg, x, y);
     }
 }
 
@@ -194,6 +216,8 @@ function draw() {
             image(mushgrassImg, camera.x - gameWidth / 2, 250, gameWidth, 100);
         } else if (world == 4) {
             image(geometrygrassImg, camera.x - gameWidth / 2, 250, gameWidth, 100);
+        } else if (world == 5) {
+            image(forestgrassImg, camera.x - gameWidth / 2, 250, gameWidth, 100);
         }
         if (playerY + velocityY > 200) {
             velocityY = 0;
@@ -207,8 +231,7 @@ function draw() {
                 if (obstacle["type"] == "cactus") {
                     drawCactus(obstacle["x"], obstacle["y"]);
                     if (collision(playerX, playerY, obstacle["x"], obstacle["y"])) {
-                        playerX = 0;
-                        velocityX = 0;
+                        respawnplayer();
                     }
                 } else if (obstacle["type"] == "block") {
                     drawBlock(obstacle["x"], obstacle["y"]);
@@ -219,21 +242,25 @@ function draw() {
                         velocityY = 0;
                     }
                 } else if (obstacle["type"] == "end") {
-                    image(enderImg, obstacle["x"], obstacle["y"], 50, 50)
+                    image(enderImg, obstacle["x"], obstacle["y"])
                 }
             }
         }
         //player
-        playerX += velocityX;
-        playerY += velocityY;
+        if (!isPaused) {
+            playerX += velocityX;
+            playerY += velocityY;
+        } else {
+            text("PAUSED", camera.x - gameWidth / 2 + 10, 10);
+        }
         if (playerX > (mapConfigs[world - 1]["end"] * 50) + 25) {
             updateWorld()
         }
         tint(color[0], color[1], color[2]);
         if (lowUpdates < 10) {
-            image(dinoImg1, playerX, playerY, 50, 50);
+            image(dinoImg1, playerX, playerY);
         } else {
-            image(dinoImg2, playerX, playerY, 50, 50);
+            image(dinoImg2, playerX, playerY);
         }
         camera.x = playerX + gameWidth / 3;
         firebase.database().ref("/MultiDino/" + room + "/players/" + player).update({
@@ -246,9 +273,9 @@ function draw() {
                 tint(thisplayer[4][0], thisplayer[4][1], thisplayer[4][2]);
                 text(thisplayer[0], thisplayer[2], thisplayer[3] - 10);
                 if (lowUpdates < 10) {
-                    image(dinoImg1, thisplayer[2], thisplayer[3], 50, 50);
+                    image(dinoImg1, thisplayer[2], thisplayer[3]);
                 } else {
-                    image(dinoImg2, thisplayer[2], thisplayer[3], 50, 50);
+                    image(dinoImg2, thisplayer[2], thisplayer[3]);
                 }
             }
         })
@@ -256,9 +283,11 @@ function draw() {
         stroke(2);
         tint(color[0], color[1], color[2]);
         if (lowUpdates < 10) {
-            image(dinoImg1, 20, 200, 50, 50);
+            image(dinoImg1, 20, 200);
+            document.getElementById("dots").innerHTML = ".";
         } else {
-            image(dinoImg2, 20, 200, 50, 50);
+            image(dinoImg2, 20, 200);
+            document.getElementById("dots").innerHTML = "...";
         }
         line(0, 250, gameWidth, 250);
     }
@@ -268,7 +297,7 @@ function draw() {
             worldLabel = "<h3>World: " + mapConfigs[world - 1]["theme"] + "</h3>";
             positionLabel = "<h3>Position X: " + Math.floor(playerX) + " Position Y: " + Math.floor(playerY) + "</h3>";
             colorLabel = "<h3>Your Dino: RGB " + color[0] + " " + color[1] + " " + color[2] + "</h3>";
-            resetLabel = "<button onclick='reset()'>Reset</button>";
+            resetLabel = "<button id='resetbtn' onclick='resetmap()'>Reset Room</button>";
             document.getElementById("login-div").innerHTML = worldLabel + positionLabel + colorLabel + resetLabel;
         }
     } else {
@@ -276,11 +305,19 @@ function draw() {
     }
 }
 
-function reset() {
+function resetmap() {
     firebase.database().ref("/MultiDino/" + room).update({
         status: "reset"
     });
     location.reload();
+}
+
+function togglePause() {
+    isPaused = !isPaused;
+}
+function respawnplayer() {
+    playerX = 0;
+    velocityX = 0;
 }
 
 document.addEventListener('touchstart', () => {

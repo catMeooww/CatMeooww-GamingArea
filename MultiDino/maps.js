@@ -22,6 +22,12 @@ mapConfigs = [
         "theme": "geometry",
         "bg": "cadetblue",
         "end": 300
+    },
+    {
+        "world": 5,
+        "theme": "forest",
+        "bg": "darkgreen",
+        "end": 500
     }
 ];
 
@@ -29,7 +35,8 @@ obstacles = [
     ["air","cactus","air"],
     ["cactus", "cactus","air"],
     ["cactus", "cactus", "cactus"],
-    ["block", "block", "block", "block"]
+    ["block", "block", "block", "block"],
+    ["air","cactus","block","air"]
 ]
 
 function generateMap() {

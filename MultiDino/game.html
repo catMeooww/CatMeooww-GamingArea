@@ -20,21 +20,55 @@
             overflow: hidden;
             background-color: white;
         }
+
         #canvas-div{
-            border: 2px double aliceblue;
+            border: 2px double darkslategray;
             text-align: center;
+        }
+
+        #canvas-div:hover,#top-div:hover,input:hover,button:hover{
+            border-color: aliceblue;
         }
 
         #login-div{
             margin:10px;
             cursor: pointer;
         }
+
+        input,button{
+            background-color: white;
+            border: 2px solid lightskyblue;
+        }
+
+        #top-div{
+            background-color: rgba(0, 0, 0, 0.8);
+            border: outset 1px darkslategray;
+            text-align: center;
+        }
+
+        #top-div button{
+            background-color: rgba(0, 0, 0, 0.8);
+            border: outset 2px slategray;
+            color: aliceblue;
+            margin: 0px;
+            padding: 5px;
+            width: 10%;
+        }
+
+        #resetbtn{
+            float: right;
+            border-color: orange;
+        }
     </style>
 </head>
 
 <body>
-    <h1 id="connection">Connecting to Dino</h1>
-    <div></div>
+    <br>
+    <div id="top-div">
+        <button id="pauseBTN" onclick="togglePause()">WAITING...</button>
+        <button id="leaveBTN" onclick="respawnplayer()">WAITING...</button>
+        <button id="connection" style="width: 78%;">Connecting to Dino<label id="dots">...</label></button>
+    </div>
     <div id="canvas-div">
 
     </div>
