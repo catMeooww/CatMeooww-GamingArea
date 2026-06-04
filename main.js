@@ -1,3 +1,5 @@
+var isMobile = /iPhone|Android|iPad/i.test(navigator.userAgent);
+
 const firebaseConfig = {
     apiKey: "AIzaSyALeqVEk8nRUaaOjfZs8XPnMrLMH3rH-9I",
     authDomain: "cat-meooww-simplegames.firebaseapp.com",

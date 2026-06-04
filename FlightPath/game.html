@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <title>Dino Tour</title>
-    <link rel="shortcut icon" href="cactus.png" type="image/png">
+    <title>Flight Path</title>
+    <link rel="shortcut icon" href="plane.png" type="image/png">
     <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-database.js"></script>
     <script src="../p5.dom.min.js"></script>
@@ -13,40 +12,27 @@
     <script src="../p5.sound.min.js"></script>
     <script src="../main.js"></script>
     <script src="maps.js"></script>
-    <script src="dino.js"></script>
-
+    <script src="flight.js"></script>
     <style>
         body {
             overflow: hidden;
-            background-color: white;
+            background-color: darkslategray;
+            color: white;
         }
 
         #canvas-div{
-            border: 2px double darkslategray;
+            border: 5px ridge black;
             text-align: center;
+            background-color: black;
         }
 
-        #canvas-div:hover,#top-div:hover,input:hover,button:hover{
-            border-color: aliceblue;
-        }
-
-        #login-div{
-            margin:10px;
-            cursor: pointer;
-        }
-
-        input,button{
-            background-color: white;
-            border: 2px solid lightskyblue;
-        }
-
-        #top-div{
+        #menu-div{
             background-color: rgba(0, 0, 0, 0.8);
             border: outset 1px darkslategray;
             text-align: center;
         }
 
-        #top-div button{
+        #menu-div button{
             background-color: rgba(0, 0, 0, 0.8);
             border: outset 2px slategray;
             color: aliceblue;
@@ -55,24 +41,38 @@
             width: 10%;
         }
 
+        #button-div{
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        #data-div p{
+            margin: 0px;
+        }
+
+        #shootbtn{
+            background-color: darkmagenta;
+        }
+        #usebtn{
+            background-color: green;
+        }
         #resetbtn{
-            float: right;
-            border-color: orange;
+            background-color: darkorange;
         }
     </style>
 </head>
-
 <body>
     <br>
-    <div id="top-div">
+    <div id="menu-div">
         <button id="pauseBTN" onclick="togglePause()">WAITING...</button>
         <button id="leaveBTN" onclick="respawnplayer()">WAITING...</button>
-        <button id="connection" style="width: 78%;">Connecting to Dino<label id="dots">...</label></button>
+        <button id="connection" style="width: 78%;">Departuring now...</button>
     </div>
     <div id="canvas-div">
 
     </div>
-    <div id="login-div">
+    <br>
+    <div id="control-div">
         <label>Player</label>
         <input id="player-name" placeholder="your nickname">
         <label>Room ID:</label>
@@ -81,5 +81,4 @@
         <button onclick="createRoom()">Create Room</button>
     </div>
 </body>
-
 </html>
