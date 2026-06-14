@@ -2,6 +2,7 @@ logged = false;
 
 isPaused = false;
 lowUpdates = 0;
+targetY = 0;
 
 onlinePlayers = [];
 thismap = [];
@@ -97,6 +98,7 @@ function preload() {
     planeImg = loadImage("plane.png");
     bricksImg = loadImage("bricks.png");
     redbricksImg = loadImage("redbricks.png");
+    greenbricksImg = loadImage("greenbricks.png");
     bombImg = loadImage("bomb.png");
 }
 
@@ -108,6 +110,7 @@ function setup() {
     planeImg.resize(50, 50);
     bricksImg.resize(50, 50);
     redbricksImg.resize(50, 50);
+    greenbricksImg.resize(50, 50);
     bombImg.resize(50, 50);
 }
 
@@ -133,15 +136,15 @@ function draw() {
         } else if (velocityX < 14) {
             velocityX += 0.01;
         }
-        if (mouseY > 0 && mouseY < gameHeight-50) {
-            if (mouseY - 10 > playerY) {
+        if (targetY > 0 && targetY < gameHeight - 50) {
+            if (targetY - 10 > playerY) {
                 velocityY = 10;
-            } else if (mouseY + 10 < playerY) {
+            } else if (targetY + 10 < playerY) {
                 velocityY = -10;
             } else {
                 velocityY = 0;
             }
-        }else{
+        } else {
             velocityY = 0;
         }
         //map
@@ -164,6 +167,15 @@ function draw() {
                     image(bombImg, block["x"], block["y"]);
                     if (collision(playerX, playerY, block["x"], block["y"])) {
                         respawnplayer();
+                    }
+                } else if (block["type"] == "4") {
+                    image(greenbricksImg, block["x"], block["y"]);
+                    if (collision(playerX, playerY + velocityY, block["x"], block["y"])) {
+                        velocityY = 0;
+                        velocityX += 1;
+                    }
+                    if (collision(playerX + velocityX, playerY, block["x"], block["y"])) {
+                        velocityX = 0;
                     }
                 }
             }
@@ -231,3 +243,7 @@ function resetmap() {
     });
     location.reload();
 }
+
+document.addEventListener("pointermove", (e) => {
+    targetY = e.y - 68;
+})
