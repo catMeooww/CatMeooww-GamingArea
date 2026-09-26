@@ -207,6 +207,9 @@ function draw() {
         if ((keyDown("space") || keyDown("up") || keyDown("w") || isMouseDown) && onground) {
             velocityY = -12;
         }
+        if (keyDown("esc")){
+            togglePause();
+        }
         //ground
         if (world == 1) {
             image(grassImg, camera.x - gameWidth / 2, 250, gameWidth, 100);

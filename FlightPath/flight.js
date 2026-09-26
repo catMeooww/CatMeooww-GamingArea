@@ -9,7 +9,10 @@ thismap = [];
 player = "";
 room = "";
 
+playerBuff = "none";
+
 playerS = 0;
+playerP = 0;
 playerX = 0;
 playerY = 200;
 velocityX = 0;
@@ -86,7 +89,7 @@ async function startPlay() {
     document.getElementById("leaveBTN").innerHTML = "RESPAWN";
 
     shootBtn = "<button id='shootbtn' onclick='shoot()'>1- Shoot (not yet)</button>";
-    useBtn = "<button id='usebtn' onclick='use()'>2- Use</button>";
+    useBtn = "<button id='usebtn' onclick='triggerBuff()'>2- Use</button>";
     resetBtn = "<button id='resetbtn' onclick='resetmap()'>Reset Room</button>";
     buttondiv = "<div id='button-div'>" + shootBtn + useBtn + resetBtn + "</div>";
     datadiv = "<div id='data-div'></div>";
@@ -100,6 +103,10 @@ function preload() {
     redbricksImg = loadImage("redbricks.png");
     greenbricksImg = loadImage("greenbricks.png");
     bombImg = loadImage("bomb.png");
+    coinImg = loadImage("coin.png");
+    buffImg = loadImage("buff.png");
+    velbuffImg = loadImage("buff_vel.png");
+    stopbuffImg = loadImage("buff_stop.png");
 }
 
 function setup() {
@@ -112,6 +119,8 @@ function setup() {
     redbricksImg.resize(50, 50);
     greenbricksImg.resize(50, 50);
     bombImg.resize(50, 50);
+    coinImg.resize(50, 50);
+    buffImg.resize(50, 50);
 }
 
 function collision(ax, ay, bx, by) {
@@ -128,7 +137,7 @@ function draw() {
         tint(255);
         //controls
         if (velocityX < 10) {
-            velocityX = 10;
+            velocityX += 1;
         } else if (keyDown("right") || keyDown("d")) {
             velocityX += 0.1;
         } else if (keyDown("left") || keyDown("a")) {
@@ -147,38 +156,18 @@ function draw() {
         } else {
             velocityY = 0;
         }
+        if (keyDown("esc")) {
+            togglePause();
+        }else if (keyDown("2")) {
+            triggerBuff();
+        }
         //map
-        for (block of thismap) {
-            if (Math.abs(camera.x - 25 - block["x"]) < gameWidth / 2) {
-                if (block["type"] == "1") {
-                    image(bricksImg, block["x"], block["y"]);
-                    if (collision(playerX + velocityX, playerY, block["x"], block["y"])) {
-                        velocityX = 0;
-                    }
-                    if (collision(playerX, playerY + velocityY, block["x"], block["y"])) {
-                        velocityY = 0;
-                    }
-                } else if (block["type"] == "2") {
-                    image(redbricksImg, block["x"], block["y"]);
-                    if (collision(playerX, playerY, block["x"], block["y"])) {
-                        respawnplayer();
-                    }
-                } else if (block["type"] == "3") {
-                    image(bombImg, block["x"], block["y"]);
-                    if (collision(playerX, playerY, block["x"], block["y"])) {
-                        respawnplayer();
-                    }
-                } else if (block["type"] == "4") {
-                    image(greenbricksImg, block["x"], block["y"]);
-                    if (collision(playerX, playerY + velocityY, block["x"], block["y"])) {
-                        velocityY = 0;
-                        velocityX += 1;
-                    }
-                    if (collision(playerX + velocityX, playerY, block["x"], block["y"])) {
-                        velocityX = 0;
-                    }
-                }
-            }
+        drawBlocks();
+        //buff
+        if (playerBuff == "velocity") {
+            image(velbuffImg, camera.x - gameWidth / 2.5, camera.y + gameHeight / 3, 60, 60);
+        } else if (playerBuff == "cobweb") {
+            image(stopbuffImg, camera.x - gameWidth / 2.5, camera.y + gameHeight / 3, 60, 60);
         }
         //player
         if (!isPaused) {
@@ -209,6 +198,7 @@ function draw() {
         })
         if (lowUpdates == 0) {
             document.getElementById("data-div").innerHTML = "<p>X: " + Math.floor(playerX) + " / Y: " + playerY + "</p>";
+            document.getElementById("data-div").innerHTML += "<p>Coins: " + playerP + "</p>";
             document.getElementById("data-div").innerHTML += "<p>Score: " + playerS + "</p>";
             document.getElementById("data-div").innerHTML += "<p>Color: " + color[0] + "," + color[1] + "," + color[2] + "</p>";
         }
@@ -232,6 +222,7 @@ function draw() {
 function respawnplayer() {
     playerX = 0;
     velocityX = 0;
+    playerBuff = "none";
 }
 function togglePause() {
     isPaused = !isPaused;
@@ -247,3 +238,65 @@ function resetmap() {
 document.addEventListener("pointermove", (e) => {
     targetY = e.y - 68;
 })
+
+function drawBlocks() {
+    for (block of thismap) {
+        if (Math.abs(camera.x - 25 - block["x"]) < gameWidth / 2) {
+            if (block["type"] == "1") {
+                image(bricksImg, block["x"], block["y"]);
+                if (collision(playerX + velocityX, playerY, block["x"], block["y"])) {
+                    velocityX = 0;
+                }
+                if (collision(playerX, playerY + velocityY, block["x"], block["y"])) {
+                    velocityY = 0;
+                }
+            } else if (block["type"] == "2") {
+                image(redbricksImg, block["x"], block["y"]);
+                if (collision(playerX, playerY, block["x"], block["y"])) {
+                    respawnplayer();
+                }
+            } else if (block["type"] == "3") {
+                image(bombImg, block["x"], block["y"]);
+                if (collision(playerX, playerY, block["x"], block["y"])) {
+                    respawnplayer();
+                }
+            } else if (block["type"] == "4") {
+                image(greenbricksImg, block["x"], block["y"]);
+                if (collision(playerX, playerY + velocityY, block["x"], block["y"])) {
+                    velocityY = 0;
+                    velocityX += 1;
+                }
+                if (collision(playerX + velocityX, playerY, block["x"], block["y"])) {
+                    velocityX = 0;
+                }
+            } else if (block["type"] == "5") {
+                image(coinImg, block["x"], block["y"]);
+                if (collision(playerX, playerY, block["x"], block["y"])) {
+                    playerP += 1;
+                }
+            } else if (block["type"] == "6") {
+                image(buffImg, block["x"], block["y"]);
+                if (collision(playerX, playerY, block["x"], block["y"])) {
+                    playerBuff = getRandomBuff();
+                }
+            }
+        }
+    }
+}
+
+function getRandomBuff() {
+    buffs = ["velocity", "cobweb"]
+    if (playerBuff == "none") {
+        return buffs[Math.floor(Math.random() * buffs.length)];
+    }
+    return playerBuff;
+}
+
+function triggerBuff(){
+    if(playerBuff == "velocity"){
+        velocityX += 5;
+    }else if(playerBuff == "cobweb"){
+        velocityX = 0;
+    }
+    playerBuff = "none";
+}
