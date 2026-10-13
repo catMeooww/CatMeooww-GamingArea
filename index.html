@@ -84,6 +84,11 @@
                     <img src="gamesIcon/cat_tower_bg.png">
                     <h3>Cat's Tower</h3>
                 </section>
+                <section class="gameItem" id="cat-island" onclick="redirect(15)" onmouseenter="bright(this.id)"
+                    onmouseleave="unbright(this.id)">
+                    <img src="gamesIcon/cat_islands_bg.png">
+                    <h3>Cat's Islands</h3>
+                </section>
                 <section class="gameItem" id="multi-dino" onclick="redirect(6)" onmouseenter="bright(this.id)"
                     onmouseleave="unbright(this.id)">
                     <img src="gamesIcon/multidino_bg.png">
@@ -193,6 +198,8 @@
                 window.location = 'FlightPath/game.html';
             }else if(to == 14) {
                 window.location = 'https://www.curseforge.com/minecraft/mc-mods/mythical-galaxy';
+            }else if (to == 15) {
+                window.location = 'https://catmeooww.github.io/Cat-Islands/';
             }
         }
     </script>
